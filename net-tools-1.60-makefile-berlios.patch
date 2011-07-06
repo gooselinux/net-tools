@@ -1,0 +1,69 @@
+diff -up net-tools-1.60/lib/Makefile.makefile-berlios net-tools-1.60/lib/Makefile
+--- net-tools-1.60/lib/Makefile.makefile-berlios	2009-09-15 18:07:12.000000000 +0200
++++ net-tools-1.60/lib/Makefile	2009-09-15 18:07:12.000000000 +0200
+@@ -36,7 +36,7 @@ OBJS	= $(sort $(VARIA) $(AFOBJS) $(HWOBJ
+ 
+ # This can be overwritten by the TOPLEVEL Makefile
+ TOPDIR=..
+-CFLAGS += -I$(TOPDIR) -idirafter $(TOPDIR)/include # -fPIC
++CFLAGS += -I$(TOPDIR) -I$(TOPDIR)/include # -fPIC
+ SONAME=libnet-tools.so.0
+ 
+ .SUFFIXES: .a .so
+diff -up net-tools-1.60/Makefile.makefile-berlios net-tools-1.60/Makefile
+--- net-tools-1.60/Makefile.makefile-berlios	2009-09-15 18:07:12.000000000 +0200
++++ net-tools-1.60/Makefile	2009-09-15 18:08:25.000000000 +0200
+@@ -88,10 +88,9 @@ endif
+ 
+ # Compiler and Linker Options
+ # You may need to uncomment and edit these if you are using libc5 and IPv6.
+-COPTS = -D_GNU_SOURCE -O2 -Wall -g # -I/usr/inet6/include
+-ifeq ($(origin LOPTS), undefined)
+-LOPTS = 
+-endif
++CFLAGS ?= -O2 -g
++CFLAGS += -fno-strict-aliasing # code needs a lot of work before strict aliasing is safe
++CPPFLAGS += -D_GNU_SOURCE
+ RESLIB = # -L/usr/inet6/lib -linet6
+ 
+ ifeq ($(HAVE_AFDECnet),1)
+@@ -119,8 +118,9 @@ CFLAGS += -DHAVE_SELINUX
+ else
+ endif
+ 
+-CFLAGS	+= $(COPTS) -I. -idirafter ./include/ -I$(NET_LIB_PATH)
+-LDFLAGS	+= $(LOPTS) -L$(NET_LIB_PATH)
++CPPFLAGS += -I. -I$(TOPDIR)/include -I$(NET_LIB_PATH)
++LDFLAGS  += -L$(NET_LIB_PATH)
++
+ 
+ SUBDIRS	= man/ $(NET_LIB_PATH)/
+ 
+@@ -131,8 +131,6 @@ LD	= $(CC)
+ 
+ NLIB	= -l$(NET_LIB_NAME)
+ 
+-MDEFINES = COPTS='$(COPTS)' LOPTS='$(LOPTS)' TOPDIR='$(TOPDIR)'
+-
+ %.o:		%.c config.h version.h intl.h net-features.h $<
+ 		$(CC) $(CFLAGS) -c $<
+ 
+@@ -181,14 +179,15 @@ $(NET_LIB):	config.h version.h intl.h li
+ 
+ i18n.h:		i18ndir
+ 
+-libdir:
+-		@$(MAKE) -C $(NET_LIB_PATH) $(MDEFINES)
++libdir:		version.h
++		@$(MAKE) -C $(NET_LIB_PATH)
+ 
+ i18ndir:
+ 		@$(MAKE) -C po
+ 
+ subdirs:
+-		@for i in $(SUBDIRS); do $(MAKE) -C $$i $(MDEFINES) ; done
++		@for i in $(SUBDIRS); do $(MAKE) -C $$i || exit $$? ; done
++
+ 
+ ifconfig:	$(NET_LIB) ifconfig.o
+ 		$(CC) $(LDFLAGS) -o ifconfig ifconfig.o $(NLIB) $(RESLIB)

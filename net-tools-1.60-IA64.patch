@@ -1,0 +1,33 @@
+diff -up net-tools-1.60/ifconfig.c.IA64 net-tools-1.60/ifconfig.c
+--- net-tools-1.60/ifconfig.c.IA64	2010-01-02 11:35:39.000000000 +0100
++++ net-tools-1.60/ifconfig.c	2010-01-02 11:35:39.000000000 +0100
+@@ -894,7 +894,8 @@ int main(int argc, char **argv)
+ 		    continue;
+ 		}
+ 		
+-		memcpy(&ip, &sin.sin_addr.s_addr, sizeof(unsigned long));
++		memset(&ip, 0, sizeof(unsigned long));
++		memcpy(&ip, &sin.sin_addr.s_addr, sizeof(sin.sin_addr.s_addr));
+ 		
+ 		if (get_nmbc_parent(ifr.ifr_name, &nm, &bc) < 0) {
+ 		    fprintf(stderr, _("Interface %s not initialized\n"),
+diff -up net-tools-1.60/lib/interface.c.IA64 net-tools-1.60/lib/interface.c
+--- net-tools-1.60/lib/interface.c.IA64	2010-01-02 11:35:39.000000000 +0100
++++ net-tools-1.60/lib/interface.c	2010-01-02 12:03:05.000000000 +0100
+@@ -491,14 +491,14 @@ int if_fetch(struct interface *ife)
+ 	if (ioctl(skfd, SIOCGOUTFILL, &ifr) < 0)
+ 	    ife->outfill = 0;
+ 	else
+-	    ife->outfill = (unsigned int) ifr.ifr_data;
++	    ife->outfill = (unsigned long) ifr.ifr_data;
+ #endif
+ #ifdef SIOCGKEEPALIVE
+ 	strcpy(ifr.ifr_name, ifname);
+ 	if (ioctl(skfd, SIOCGKEEPALIVE, &ifr) < 0)
+ 	    ife->keepalive = 0;
+ 	else
+-	    ife->keepalive = (unsigned int) ifr.ifr_data;
++	    ife->keepalive = (unsigned long) ifr.ifr_data;
+ #endif
+     }
+ #endif

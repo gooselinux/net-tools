@@ -1,0 +1,57 @@
+diff -up net-tools-1.60/netstat.c.overflow net-tools-1.60/netstat.c
+--- net-tools-1.60/netstat.c.overflow	2010-01-02 10:45:45.000000000 +0100
++++ net-tools-1.60/netstat.c	2010-01-02 10:50:50.000000000 +0100
+@@ -777,7 +777,7 @@ static void tcp_do_one(int lnr, const ch
+ 	    local_addr[22 - strlen(buffer)] = '\0';
+ 
+ 	strcat(local_addr, ":");
+-	strcat(local_addr, buffer);
++	strncat(local_addr, buffer, sizeof(local_addr)-strlen(local_addr)-1);
+ 	snprintf(buffer, sizeof(buffer), "%s",
+ 		 get_sname(htons(rem_port), "tcp", flag_not & FLAG_NUM_PORT));
+ 
+@@ -785,7 +785,7 @@ static void tcp_do_one(int lnr, const ch
+ 	    rem_addr[22 - strlen(buffer)] = '\0';
+ 
+ 	strcat(rem_addr, ":");
+-	strcat(rem_addr, buffer);
++	strncat(rem_addr, buffer, sizeof(rem_addr)-strlen(rem_addr)-1);
+ 	timers[0] = '\0';
+ 
+ 	if (flag_opt)
+@@ -926,7 +926,7 @@ static void udp_do_one(int lnr, const ch
+ 	if ((strlen(local_addr) + strlen(buffer)) > 22)
+ 	    local_addr[22 - strlen(buffer)] = '\0';
+ 	strcat(local_addr, ":");
+-	strcat(local_addr, buffer);
++	strncat(local_addr, buffer, sizeof(local_addr)-strlen(local_addr)-1);
+ 
+ 	snprintf(buffer, sizeof(buffer), "%s",
+ 		 get_sname(htons(rem_port), "udp", flag_not & FLAG_NUM_PORT));
+@@ -935,7 +935,7 @@ static void udp_do_one(int lnr, const ch
+ 	if ((strlen(rem_addr) + strlen(buffer)) > 22)
+ 	    rem_addr[22 - strlen(buffer)] = '\0';
+ 	strcat(rem_addr, ":");
+-	strcat(rem_addr, buffer);
++	strncat(rem_addr, buffer, sizeof(rem_addr)-strlen(rem_addr)-1);
+ 
+ 	timers[0] = '\0';
+ 	if (flag_opt)
+@@ -1045,7 +1045,7 @@ static void raw_do_one(int lnr, const ch
+ 	if ((strlen(local_addr) + strlen(buffer)) > 22)
+ 	    local_addr[22 - strlen(buffer)] = '\0';
+ 	strcat(local_addr, ":");
+-	strcat(local_addr, buffer);
++	strncat(local_addr, buffer, sizeof(local_addr)-strlen(local_addr)-1);
+ 
+ 	snprintf(buffer, sizeof(buffer), "%s",
+ 		 get_sname(htons(rem_port), "raw", flag_not & FLAG_NUM_PORT));
+@@ -1054,7 +1054,7 @@ static void raw_do_one(int lnr, const ch
+ 	if ((strlen(rem_addr) + strlen(buffer)) > 22)
+ 	    rem_addr[22 - strlen(buffer)] = '\0';
+ 	strcat(rem_addr, ":");
+-	strcat(rem_addr, buffer);
++	strncat(rem_addr, buffer, sizeof(rem_addr)-strlen(rem_addr)-1);
+ 
+ 	timers[0] = '\0';
+ 	if (flag_opt)

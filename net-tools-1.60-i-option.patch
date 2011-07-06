@@ -1,0 +1,57 @@
+--- net-tools-1.60/netstat.c.i-option	2008-07-10 10:56:29.000000000 +0200
++++ net-tools-1.60/netstat.c	2008-07-10 13:46:27.000000000 +0200
+@@ -2042,7 +2042,7 @@ static void usage(void)
+     fprintf(stderr, _("       netstat { [-veenNac] -I[<Iface>] | [-veenNac] -i | [-cnNe] -M | -s } [delay]\n\n"));
+ 
+     fprintf(stderr, _("        -r, --route                display routing table\n"));
+-    fprintf(stderr, _("        -I, --interface=[<Iface>] display interface table for <Iface>\n"));
++    fprintf(stderr, _("        -I, --interfaces=<Iface>   display interface table for <Iface>\n"));
+     fprintf(stderr, _("        -i, --interfaces           display interface table\n"));
+     fprintf(stderr, _("        -g, --groups               display multicast group memberships\n"));
+     fprintf(stderr, _("        -s, --statistics           display networking statistics (like SNMP)\n"));
+@@ -2085,7 +2085,6 @@ int main
+ 	AFTRANS_OPTS,
+ 	{"version", 0, 0, 'V'},
+ 	{"interfaces", 2, 0, 'I'},
+-	{"interfaces", 0, 0, 'i'},
+ 	{"help", 0, 0, 'h'},
+ 	{"route", 0, 0, 'r'},
+ #if HAVE_FW_MASQUERADE
+@@ -2173,10 +2172,6 @@ int main
+         	if (optarg[0] == '=') optarg++;
+             if (optarg && strcmp(optarg, "(null)")) 
+             	flag_int_name = strdup(optarg);
+-            else {
+-            	usage();
+-            	exit(1);
+-            }
+ 	    flag_int++;
+ 	    break;
+ 	case 'i':
+--- net-tools-1.60/man/en_US/netstat.8.i-option	2008-07-10 13:55:04.000000000 +0200
++++ net-tools-1.60/man/en_US/netstat.8	2008-07-15 12:21:51.000000000 +0200
+@@ -43,10 +43,10 @@ netstat \- Print network connections, ro
+ .RB [delay]
+ .P
+ .B netstat
+-.RB { \-\-interfaces | \-i }
++.RB { \-\-interfaces | \-I | \-i } 
+ .RI [ iface ]
+ .RB [ \-\-all | \-a ]
+-.RB [ \-\-extend | \-e  [ \-\-extend | \-e] ]
++.RB [ \-\-extend | \-e  ]
+ .RB [ \-\-verbose | \-v ]
+ .RB [ \-\-program | \-p ]
+ .RB [ \-\-numeric | \-n ]
+@@ -107,9 +107,8 @@ families will be printed.
+ Display the kernel routing tables.
+ .SS "\-\-groups , \-g"
+ Display multicast group membership information for IPv4 and IPv6.
+-.SS "\-\-interface=\fIiface \fR, \fB\-i"
+-Display a table of all network interfaces, or the specified
+-.IR iface ) .
++.SS "\-\-interfaces=\fIiface \fR, \fB\-I=\fIiface \fR, \fB\-i"
++Display a table of all network interfaces, or the specified \fIiface\fR.
+ .SS "\-\-masquerade , \-M"
+ Display a list of masqueraded connections.
+ .SS "\-\-statistics , \-s"

@@ -1,0 +1,61 @@
+diff -up net-tools-1.60/lib/rose.c.debug-fix net-tools-1.60/lib/rose.c
+--- net-tools-1.60/lib/rose.c.debug-fix	2000-03-05 12:26:03.000000000 +0100
++++ net-tools-1.60/lib/rose.c	2009-09-01 13:02:20.000000000 +0200
+@@ -86,7 +86,7 @@ static int ROSE_input(int type, char *bu
+     if (strlen(bufp) != 10) {
+ 	strcpy(ROSE_errmsg, _("Node address must be ten digits"));
+ #ifdef DEBUG
+-	fprintf(stderr, "rose_input(%s): %s !\n", ROSE_errmsg, orig);
++	fprintf(stderr, "rose_input(%s): %s !\n", bufp, ROSE_errmsg);
+ #endif
+ 	errno = EINVAL;
+ 	return (-1);
+@@ -99,7 +99,7 @@ static int ROSE_input(int type, char *bu
+ 
+     /* All done. */
+ #ifdef DEBUG
+-    fprintf(stderr, "rose_input(%s): ", orig);
++    fprintf(stderr, "rose_input(%s): ", bufp);
+     for (i = 0; i < sizeof(rose_address); i++)
+ 	fprintf(stderr, "%02X ", sap->sa_data[i] & 0377);
+     fprintf(stderr, "\n");
+diff -up net-tools-1.60/lib/x25.c.debug-fix net-tools-1.60/lib/x25.c
+--- net-tools-1.60/lib/x25.c.debug-fix	2000-05-20 20:53:25.000000000 +0200
++++ net-tools-1.60/lib/x25.c	2009-09-01 13:06:05.000000000 +0200
+@@ -81,6 +81,7 @@ X25_input(int type, char *bufp, struct s
+   unsigned char *ptr;
+   char *p;
+   unsigned int sigdigits;
++  int i;
+ 
+   sap->sa_family = x25_aftype.af;
+   ptr = ((struct sockaddr_x25 *)sap)->sx25_addr.x25_addr;
+@@ -90,7 +91,7 @@ X25_input(int type, char *bufp, struct s
+   if (strlen(bufp)>18) {
+         strcpy(X25_errmsg, _("Address can't exceed eighteen digits with sigdigits"));
+ #ifdef DEBUG
+-        fprintf(stderr, "x25_input(%s): %s !\n", X25_errmsg, orig);
++        fprintf(stderr, "x25_input(%s): %s !\n", bufp, X25_errmsg);
+ #endif
+         errno = EINVAL;
+         return(-1);
+@@ -108,7 +109,7 @@ X25_input(int type, char *bufp, struct s
+ 	*p = '/';
+         strcpy(X25_errmsg, _("Invalid address"));
+ #ifdef DEBUG
+-        fprintf(stderr, "x25_input(%s): %s !\n", X25_errmsg, orig);
++        fprintf(stderr, "x25_input(%s): %s !\n", bufp, X25_errmsg);
+ #endif
+         errno = EINVAL;
+         return(-1);
+@@ -118,8 +119,8 @@ X25_input(int type, char *bufp, struct s
+ 
+   /* All done. */
+ #ifdef DEBUG
+-  fprintf(stderr, "x25_input(%s): ", orig);
+-  for (i = 0; i < sizeof(x25_address); i++)
++  fprintf(stderr, "x25_input(%s): ", bufp);
++  for (i = 0; i < sizeof(sap->sa_data); i++)
+ 	fprintf(stderr, "%02X ", sap->sa_data[i] & 0377);
+   fprintf(stderr, "\n");
+ #endif

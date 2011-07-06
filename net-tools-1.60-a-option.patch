@@ -1,0 +1,44 @@
+--- net-tools-1.60/man/de_DE/arp.8.a-option	2008-07-08 16:35:08.000000000 +0200
++++ net-tools-1.60/man/de_DE/arp.8	2008-07-08 16:35:35.000000000 +0200
+@@ -77,7 +77,7 @@ Andere m\(:ogliche Werte sind Netzwerkst
+ and
+ .RB "NET/ROM (" netrom ")."
+ .TP
+-.B "\-a [Rechnername], \-\-display [Rechnername]"
++.B "\-a [Rechnername], \-\-all [Rechnername]"
+ Zeigt die Eintr\(:age der angegebenen Rechner an.  Wird kein
+ .B hostname
+ Argument verwendet, so werden alle Eintr\(:age aufgelistet.
+--- net-tools-1.60/man/en_US/arp.8.a-option	2008-07-08 16:35:41.000000000 +0200
++++ net-tools-1.60/man/en_US/arp.8	2008-07-08 16:35:48.000000000 +0200
+@@ -76,7 +76,7 @@ Other values might include network techn
+ and
+ .RB "NET/ROM (" netrom ")."
+ .TP
+-.B "\-a [hostname], \-\-display [hostname]"
++.B "\-a [hostname], \-\-all [hostname]"
+ Shows the entries of the specified hosts.  If the
+ .B hostname
+ parameter is not used,
+--- net-tools-1.60/man/fr_FR/arp.8.a-option	2008-07-08 16:35:53.000000000 +0200
++++ net-tools-1.60/man/fr_FR/arp.8	2008-07-08 16:36:03.000000000 +0200
+@@ -81,7 +81,7 @@ D'autres valeurs doivent correspondre à 
+ and
+ .RB "NET/ROM (" netrom ")."
+ .TP
+-.B "\-a [nom_d_hôte], \-\-display [nom_d_hôte]"
++.B "\-a [nom_d_hôte], \-\-all [nom_d_hôte]"
+ Affiche les entrées concernant l'hôte spécifié.  Si le paramètre
+ .B nom_d_hôte
+ n'est pas utilisé,
+--- net-tools-1.60/man/pt_BR/arp.8.a-option	2008-07-08 16:38:13.000000000 +0200
++++ net-tools-1.60/man/pt_BR/arp.8	2008-07-08 16:38:20.000000000 +0200
+@@ -77,7 +77,7 @@ Outros valores podem incluir tecnologias
+ e
+ .RB "NET/ROM (" netrom ")."
+ .TP
+-.B "\-a [máquina], \-\-display [máquina]"
++.B "\-a [máquina], \-\-all [máquina]"
+ Mostra as entradas das máquinas especificadas. Se o parâmetro
+ .B máquina
+ não for usado,

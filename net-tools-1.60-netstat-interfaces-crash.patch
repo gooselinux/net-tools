@@ -1,0 +1,25 @@
+--- net-tools-1.60/netstat.c.old	2007-03-27 09:28:28.000000000 +0200
++++ net-tools-1.60/netstat.c	2007-03-27 09:26:39.000000000 +0200
+@@ -2105,7 +2105,7 @@
+     fprintf(stderr, _("       netstat { [-veenNac] -I[<Iface>] | [-veenNac] -i | [-cnNe] -M | -s } [delay]\n\n"));
+ 
+     fprintf(stderr, _("        -r, --route                display routing table\n"));
+-    fprintf(stderr, _("        -I, --interfaces=[<Iface>] display interface table for <Iface>\n"));
++    fprintf(stderr, _("        -I, --interface=[<Iface>] display interface table for <Iface>\n"));
+     fprintf(stderr, _("        -i, --interfaces           display interface table\n"));
+     fprintf(stderr, _("        -g, --groups               display multicast group memberships\n"));
+     fprintf(stderr, _("        -s, --statistics           display networking statistics (like SNMP)\n"));
+@@ -2234,7 +2234,12 @@
+ 	case 'I':
+             if (optarg && strcmp(optarg, "(null)"))
+         	if (optarg[0] == '=') optarg++;
+-                flag_int_name = strdup(optarg);
++            if (optarg && strcmp(optarg, "(null)")) 
++            	flag_int_name = strdup(optarg);
++            else {
++            	usage();
++            	exit(1);
++            }
+ 	    flag_int++;
+ 	    break;
+ 	case 'i':

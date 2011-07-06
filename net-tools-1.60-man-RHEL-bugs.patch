@@ -1,0 +1,18 @@
+diff -up net-tools-1.60/man/de_DE/arp.8.man-RHEL-bugs net-tools-1.60/man/de/arp.8
+--- net-tools-1.60/man/de_DE/arp.8.man-RHEL-bugs	2009-09-09 15:52:27.000000000 +0200
++++ net-tools-1.60/man/de_DE/arp.8	2009-09-09 15:59:33.000000000 +0200
+@@ -120,11 +120,9 @@ Flagge) kann
+ .B Netmaske
+ f\(:ur ARP-Eintr\(:age f\(:ur ganze Subnetze angegeben werde.  Von dieser
+ Praxis wird abgeraten.  Sie wird von \(:alteren Kerneln unterst\(:utzt, da
+-sie gelegentlich n\(:utzlich ist.  Wird die
+-If the
+-.B temp
+-Flagge nicht angegeben, so werden die erzeugten Eintr\(:age nicht dauerhaft
+-in den ARP-Cache eingetragen.
++sie gelegentlich n\(:utzlich ist.
++Der Eintrag wird permanent im ARP-Cache gespeichert,
++wenn das \fBtemp\fR-Flag nicht angegeben wird.
+ .br
+ .B ANMERKUNG:
+ Ab der Kernelversion 2.2.0 ist es nicht mehr m\(:oglich ARP-Eintr\(:age f\(:ur

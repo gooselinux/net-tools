@@ -1,0 +1,61 @@
+diff -up net-tools-1.60/netstat.c.continous-flush-stdout net-tools-1.60/netstat.c
+--- net-tools-1.60/netstat.c.continous-flush-stdout	2009-08-28 10:57:12.000000000 +0200
++++ net-tools-1.60/netstat.c	2009-08-28 10:58:48.000000000 +0200
+@@ -357,6 +357,12 @@ static void prg_cache_clear(void)
+     prg_cache_loaded=0;
+ }
+ 
++static void wait_continous(const int reptimer)
++{
++    fflush(stdout);
++    sleep(reptimer);
++}
++
+ static void extract_type_1_socket_inode(const char lname[], unsigned long * inode_p, int * status) {
+ 
+     /* If lname is of the form "socket:[12345]", extract the "12345"
+@@ -2289,7 +2295,7 @@ int main
+ 			     flag_not & FLAG_NUM_PORT, flag_exp);
+ 	    if (i || !flag_cnt)
+ 		break;
+-	    sleep(reptimer);
++	    wait_continous(reptimer);
+ 	}
+ #else
+ 	ENOSUPP("netstat.c", "FW_MASQUERADE");
+@@ -2305,7 +2311,7 @@ int main
+ 	
+ 	if(i || !flag_cnt)
+ 	  break;
+-	sleep(reptimer);
++	wait_continous(reptimer);
+       }
+       return(i);
+     }
+@@ -2329,7 +2335,7 @@ int main
+ 	    i = route_info(afname, options);
+ 	    if (i || !flag_cnt)
+ 		break;
+-	    sleep(reptimer);
++	    wait_continous(reptimer);
+ 	}
+ 	return (i);
+     }
+@@ -2338,7 +2344,7 @@ int main
+ 	    i = iface_info();
+ 	    if (!flag_cnt || i)
+ 		break;
+-	    sleep(reptimer);
++	    wait_continous(reptimer);
+ 	}
+ 	return (i);
+     }
+@@ -2470,7 +2476,7 @@ int main
+ 	}
+ 	if (!flag_cnt || i)
+ 	    break;
+-	sleep(reptimer);
++	wait_continous(reptimer);
+ 	prg_cache_clear();
+ 	tcp_node_hash_clear();
+     }

@@ -1,0 +1,186 @@
+--- net-tools-1.60/netstat.c.inode	2006-02-23 09:28:23.000000000 +0100
++++ net-tools-1.60/netstat.c	2006-02-23 09:33:57.000000000 +0100
+@@ -231,7 +231,7 @@
+ 
+ static struct prg_node {
+     struct prg_node *next;
+-    int inode;
++    unsigned long inode;
+     char name[PROGNAME_WIDTH];
+     char scon[SELINUX_WIDTH];
+ } *prg_hash[PRG_HASH_SIZE];
+@@ -268,7 +268,7 @@
+ /* NOT working as of glibc-2.0.7: */
+ #undef  DIRENT_HAVE_D_TYPE_WORKS
+ 
+-static void prg_cache_add(int inode, char *name, char *scon)
++static void prg_cache_add(unsigned long inode, char *name, char *scon)
+ {
+     unsigned hi = PRG_HASHIT(inode);
+     struct prg_node **pnp,*pn;
+@@ -332,15 +332,16 @@
+     prg_cache_loaded=0;
+ }
+ 
+-static void extract_type_1_socket_inode(const char lname[], long * inode_p) {
++static void extract_type_1_socket_inode(const char lname[], unsigned long * inode_p, int * status) {
+ 
+     /* If lname is of the form "socket:[12345]", extract the "12345"
+-       as *inode_p.  Otherwise, return -1 as *inode_p.
++       as *inode_p.  Otherwise, return -1 as *status.
+        */
+ 
+-    if (strlen(lname) < PRG_SOCKET_PFXl+3) *inode_p = -1;
+-    else if (memcmp(lname, PRG_SOCKET_PFX, PRG_SOCKET_PFXl)) *inode_p = -1;
+-    else if (lname[strlen(lname)-1] != ']') *inode_p = -1;
++    *status = 0;
++    if (strlen(lname) < PRG_SOCKET_PFXl+3) *status = -1;
++    else if (memcmp(lname, PRG_SOCKET_PFX, PRG_SOCKET_PFXl)) *status = -1;
++    else if (lname[strlen(lname)-1] != ']') *status = -1;
+     else {
+         char inode_str[strlen(lname + 1)];  /* e.g. "12345" */
+         const int inode_str_len = strlen(lname) - PRG_SOCKET_PFXl - 1;
+@@ -348,28 +349,30 @@
+ 
+         strncpy(inode_str, lname+PRG_SOCKET_PFXl, inode_str_len);
+         inode_str[inode_str_len] = '\0';
+-        *inode_p = strtol(inode_str,&serr,0);
+-        if (!serr || *serr || *inode_p < 0 || *inode_p >= INT_MAX) 
+-            *inode_p = -1;
++        errno = 0;
++        *inode_p = strtoul(inode_str,&serr,0);
++        if (!serr || *serr || errno) 
++            *status = -1;
+     }
+ }
+ 
+ 
+ 
+-static void extract_type_2_socket_inode(const char lname[], long * inode_p) {
++static void extract_type_2_socket_inode(const char lname[], unsigned long * inode_p, int * status) {
+ 
+     /* If lname is of the form "[0000]:12345", extract the "12345"
+-       as *inode_p.  Otherwise, return -1 as *inode_p.
++       as *inode_p.  Otherwise, return -1 as *status.
+        */
+ 
+-    if (strlen(lname) < PRG_SOCKET_PFX2l+1) *inode_p = -1;
+-    else if (memcmp(lname, PRG_SOCKET_PFX2, PRG_SOCKET_PFX2l)) *inode_p = -1;
++    if (strlen(lname) < PRG_SOCKET_PFX2l+1) *status = -1;
++    else if (memcmp(lname, PRG_SOCKET_PFX2, PRG_SOCKET_PFX2l)) *status = -1;
+     else {
+         char *serr;
+ 
+-        *inode_p=strtol(lname + PRG_SOCKET_PFX2l,&serr,0);
+-        if (!serr || *serr || *inode_p < 0 || *inode_p >= INT_MAX) 
+-            *inode_p = -1;
++        errno = 0;
++        *inode_p=strtoul(lname + PRG_SOCKET_PFX2l,&serr,0);
++        if (!serr || *serr || errno) 
++            *status = -1;
+     }
+ }
+ 
+@@ -380,11 +383,12 @@
+     char line[LINE_MAX],eacces=0;
+     int procfdlen,fd,cmdllen,lnamelen;
+     char lname[30],cmdlbuf[512],finbuf[PROGNAME_WIDTH];
+-    long inode;
++    unsigned long inode;
+     const char *cs,*cmdlp;
+     DIR *dirproc=NULL,*dirfd=NULL;
+     struct dirent *direproc,*direfd;
+     security_context_t scon=NULL;
++    int status;
+ 
+     if (prg_cache_loaded || !flag_prg) return;
+     prg_cache_loaded=1;
+@@ -424,11 +428,11 @@
+ 	    lnamelen=readlink(line,lname,sizeof(lname)-1);
+             lname[lnamelen] = '\0';  /*make it a null-terminated string*/
+ 
+-            extract_type_1_socket_inode(lname, &inode);
++            extract_type_1_socket_inode(lname, &inode, &status);
+ 
+-            if (inode < 0) extract_type_2_socket_inode(lname, &inode);
++            if (status < 0) extract_type_2_socket_inode(lname, &inode, &status);
+ 
+-            if (inode < 0) continue;
++            if (status < 0) continue;
+ 
+ 	    if (!cmdlp) {
+ 		if (procfdlen - PATH_FD_SUFFl + PATH_CMDLINEl >= 
+@@ -732,7 +736,7 @@
+ 	    printf("%-10s ", pw->pw_name);
+ 	else
+ 	    printf("%-10d ", uid);
+-	printf("%-10ld ",inode);
++	printf("%-10lu ",inode);
+     }
+     if (flag_prg)
+ 	printf("%-" PROGNAME_WIDTHs "s",prg_cache_get(inode));
+@@ -921,7 +925,7 @@
+ 	return;
+ 
+     num = sscanf(line,
+-    "%d: %64[0-9A-Fa-f]:%X %64[0-9A-Fa-f]:%X %X %lX:%lX %X:%lX %lX %d %d %ld %512s\n",
++    "%d: %64[0-9A-Fa-f]:%X %64[0-9A-Fa-f]:%X %X %lX:%lX %X:%lX %lX %d %d %lu %512s\n",
+ 		 &d, local_addr, &local_port, rem_addr, &rem_port, &state,
+ 		 &txq, &rxq, &timer_run, &time_len, &retr, &uid, &timeout, &inode, more);
+ 
+@@ -1064,7 +1068,7 @@
+ 
+     more[0] = '\0';
+     num = sscanf(line,
+-		 "%d: %64[0-9A-Fa-f]:%X %64[0-9A-Fa-f]:%X %X %lX:%lX %X:%lX %lX %d %d %ld %512s\n",
++		 "%d: %64[0-9A-Fa-f]:%X %64[0-9A-Fa-f]:%X %X %lX:%lX %X:%lX %lX %d %d %lu %512s\n",
+ 		 &d, local_addr, &local_port,
+ 		 rem_addr, &rem_port, &state,
+ 	  &txq, &rxq, &timer_run, &time_len, &retr, &uid, &timeout, &inode, more);
+@@ -1206,7 +1210,7 @@
+ 
+     more[0] = '\0';
+     num = sscanf(line,
+-		 "%d: %64[0-9A-Fa-f]:%X %64[0-9A-Fa-f]:%X %X %lX:%lX %X:%lX %lX %d %d %ld %512s\n",
++		 "%d: %64[0-9A-Fa-f]:%X %64[0-9A-Fa-f]:%X %X %lX:%lX %X:%lX %lX %d %d %lu %512s\n",
+ 		 &d, local_addr, &local_port, rem_addr, &rem_port, &state,
+ 	  &txq, &rxq, &timer_run, &time_len, &retr, &uid, &timeout, &inode, more);
+ 
+@@ -1320,9 +1324,9 @@
+     static int has = 0;
+     char path[MAXPATHLEN], ss_flags[32];
+     char *ss_proto, *ss_state, *ss_type;
+-    int num, state, type, inode;
++    int num, state, type;
+     void *d;
+-    unsigned long refcnt, proto, flags;
++    unsigned long refcnt, proto, flags, inode;
+ 
+     if (nr == 0) {
+ 	if (strstr(line, "Inode"))
+@@ -1330,14 +1334,14 @@
+ 	return;
+     }
+     path[0] = '\0';
+-    num = sscanf(line, "%p: %lX %lX %lX %X %X %d %s",
++    num = sscanf(line, "%p: %lX %lX %lX %X %X %lu %s",
+ 		 &d, &refcnt, &proto, &flags, &type, &state, &inode, path);
+     if (num < 6) {
+ 	fprintf(stderr, _("warning, got bogus unix line.\n"));
+ 	return;
+     }
+     if (!(has & HAS_INODE))
+-	snprintf(path,sizeof(path),"%d",inode);
++	snprintf(path,sizeof(path),"%lu",inode);
+ 
+     if (!flag_all) {
+     	if ((state == SS_UNCONNECTED) && (flags & SO_ACCEPTCON)) {
+@@ -1429,7 +1433,7 @@
+     printf("%-5s %-6ld %-11s %-10s %-13s ",
+ 	   ss_proto, refcnt, ss_flags, ss_type, ss_state);
+     if (has & HAS_INODE)
+-	printf("%-6d ",inode);
++	printf("%-6lu ",inode);
+     else
+ 	printf("-      ");
+     if (flag_prg)

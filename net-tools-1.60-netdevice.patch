@@ -1,0 +1,22 @@
+--- net-tools-1.60/lib/fddi.c.netdevice	2000-03-05 12:26:02.000000000 +0100
++++ net-tools-1.60/lib/fddi.c	2006-05-09 11:19:51.000000000 +0200
+@@ -26,6 +26,8 @@
+ #error "No FDDI Support in your current Kernelsource Tree."
+ #error "Disable HW Type FDDI"
+ #endif
++#include <linux/netdevice.h>
++#include <asm/byteorder.h>
+ #if __GLIBC__ >= 2
+ #include <netinet/if_fddi.h>
+ #else
+--- net-tools-1.60/lib/x25_sr.c.netdevice	2000-05-20 15:38:10.000000000 +0200
++++ net-tools-1.60/lib/x25_sr.c	2006-05-09 11:20:15.000000000 +0200
+@@ -77,7 +77,7 @@
+   rt.sigdigits=sigdigits;
+ 
+   /* x25_route_struct.address isn't type struct sockaddr_x25, Why? */
+-  memcpy(&rt.address, &sx25.sx25_addr, sizeof(x25_address));
++  memcpy(&rt.address, &sx25.sx25_addr, sizeof(struct x25_address));
+ 
+   while (*args) {
+ 	if (!strcmp(*args,"device") || !strcmp(*args,"dev")) {

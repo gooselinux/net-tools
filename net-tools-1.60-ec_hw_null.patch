@@ -1,0 +1,12 @@
+diff -up net-tools-1.60/lib/ec_hw.c.ec_hw_null net-tools-1.60/lib/ec_hw.c
+--- net-tools-1.60/lib/ec_hw.c.ec_hw_null	1999-11-20 22:02:53.000000000 +0100
++++ net-tools-1.60/lib/ec_hw.c	2009-09-15 16:33:27.000000000 +0200
+@@ -15,7 +15,7 @@
+ #include "config.h"
+ 
+ #if HAVE_HWEC
+-
++#include <stdlib.h>
+ #include <net/if_arp.h>
+ #include "net-support.h"
+ 

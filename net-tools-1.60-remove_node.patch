@@ -1,0 +1,24 @@
+--- net-tools-1.60/man/en_US/hostname.1.old	2007-03-15 13:45:55.000000000 +0100
++++ net-tools-1.60/man/en_US/hostname.1	2007-03-15 13:49:12.000000000 +0100
+@@ -28,8 +28,6 @@
+ .RB [ \-y ]
+ .RB [ \-\-yp ]
+ .RB [ \-\-nis ]
+-.RB [ \-n ]
+-.RB [ \-\-node ]
+ 
+ .PP
+ .B hostname 
+--- net-tools-1.60/hostname.c.old	2007-03-15 13:45:55.000000000 +0100
++++ net-tools-1.60/hostname.c	2007-03-15 13:47:27.000000000 +0100
+@@ -234,8 +234,9 @@
+     fprintf(stderr, _("       domainname [-v] {nisdomain|-F file}   set NIS domainname (from file)\n"));
+ #if HAVE_AFDECnet
+     fprintf(stderr, _("       nodename [-v] {nodename|-F file}      set DECnet node name (from file)\n"));
++    fprintf(stderr, _("       hostname [-n] 			    DECnet domain name\n"));
+ #endif
+-    fprintf(stderr, _("       hostname [-v] [-d|-f|-s|-a|-i|-y|-n]  display formatted name\n"));
++    fprintf(stderr, _("       hostname [-v] [-d|-f|-s|-a|-i|-y]  display formatted name\n"));
+     fprintf(stderr, _("       hostname [-v]                         display hostname\n\n"));
+     fprintf(stderr, _("       hostname -V|--version|-h|--help       print info and exit\n\n"));
+     fprintf(stderr, _("    dnsdomainname=hostname -d, {yp,nis,}domainname=hostname -y\n\n"));

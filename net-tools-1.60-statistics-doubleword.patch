@@ -1,0 +1,39 @@
+diff -up net-tools-1.60/statistics.c.doubleword net-tools-1.60/statistics.c
+--- net-tools-1.60/statistics.c.doubleword	2010-02-17 15:01:12.000000000 +0100
++++ net-tools-1.60/statistics.c	2010-04-07 13:18:02.000000000 +0200
+@@ -271,7 +271,7 @@ int cmpentries(const void *a, const void
+     return strcmp(((struct entry *) a)->title, ((struct entry *) b)->title);
+ }
+ 
+-void printval(struct tabtab *tab, char *title, int val)
++void printval(struct tabtab *tab, char *title, unsigned long long val)
+ {
+     struct entry *ent = NULL, key;
+     int type;
+@@ -283,7 +283,7 @@ void printval(struct tabtab *tab, char *
+ 			  sizeof(struct entry), cmpentries);
+     if (!ent) {			/* try our best */
+ 	if (val) 
+-		printf("%*s%s: %d\n", states[state].indent, "", title, val);
++		printf("%*s%s: %llu\n", states[state].indent, "", title, val);
+ 	return;
+     }
+     type = ent->type;
+@@ -390,7 +390,7 @@ void process_fd(FILE *f,int file_desc)  
+ 	    *p = '\0';
+ 
+ 	    if (*sp != '\0' && *(tab->flag)) 	
+-		printval(tab, sp, strtoul(np, &np, 10));
++		printval(tab, sp, strtoull(np, &np, 10));
+ 
+ 	    sp = p + 1;
+ 	}
+@@ -426,7 +426,7 @@ void process_fd2(FILE *f, const char *fi
+ 	sp += strspn(sp, " \t\n"); 
+ 
+ 	if (*sp != '\0' && *(tab->flag)) 	
+-	    printval(tab, buf1, strtoul(sp, 0, 10));
++	    printval(tab, buf1, strtoull(sp, 0, 10));
+     }
+   return;
+   

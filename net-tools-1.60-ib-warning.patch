@@ -1,0 +1,15 @@
+diff -up net-tools-1.60/lib/ib.c.ib-warning net-tools-1.60/lib/ib.c
+--- net-tools-1.60/lib/ib.c.ib-warning	2009-09-01 13:45:55.000000000 +0200
++++ net-tools-1.60/lib/ib.c	2009-09-01 13:47:43.000000000 +0200
+@@ -48,7 +48,10 @@ static char *pr_ib(unsigned char *ptr)
+ 	pos += sprintf(pos, "%02X:", (*ptr++ & 0377));
+     }
+     buff[strlen(buff) - 1] = '\0';
+-
++    char *ib_warning = "Ifconfig uses the ioctl access method to get the full address information, which limits hardware addresses to 8 bytes.\n"
++                       "Because Infiniband address has 20 bytes, only the first 8 bytes are displayed correctly.\n"
++                       "Ifconfig is obsolete! For replacement check ip.\n";
++    fprintf(stderr, _(ib_warning));
+     /* snprintf(buff, sizeof(buff), "%02X:%02X:%02X:%02X:%02X:%02X",
+ 	     (ptr[0] & 0377), (ptr[1] & 0377), (ptr[2] & 0377),
+ 	     (ptr[3] & 0377), (ptr[4] & 0377), (ptr[5] & 0377)

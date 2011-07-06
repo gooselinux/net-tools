@@ -1,0 +1,10 @@
+--- net-tools-1.60/netstat.c.old	2006-10-02 12:03:49.000000000 +0200
++++ net-tools-1.60/netstat.c	2006-10-02 12:02:12.000000000 +0200
+@@ -2233,6 +2233,7 @@ int main
+ 	    break;
+ 	case 'I':
+             if (optarg && strcmp(optarg, "(null)"))
++        	if (optarg[0] == '=') optarg++;
+                 flag_int_name = strdup(optarg);
+ 	    flag_int++;
+ 	    break;

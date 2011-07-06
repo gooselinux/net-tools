@@ -1,0 +1,267 @@
+diff -up net-tools-1.60/man/en_US/arp.8.man-obsolete net-tools-1.60/man/en_US/arp.8
+--- net-tools-1.60/man/en_US/arp.8.man-obsolete	2009-09-01 11:28:22.000000000 +0200
++++ net-tools-1.60/man/en_US/arp.8	2009-09-01 11:28:22.000000000 +0200
+@@ -1,6 +1,8 @@
+ .TH ARP 8 "5 Jan 1999" "net-tools" "Linux Programmer's Manual"
++
+ .SH NAME
+ arp \- manipulate the system ARP cache
++
+ .SH SYNOPSIS
+ .B arp 
+ .RB [ \-evn ] 
+@@ -44,6 +46,10 @@ arp \- manipulate the system ARP cache
+ .RB [ "-i if" ]
+ .B -f [filename]
+ 
++.SH NOTE
++.P 
++This program is obsolete. For replacement check \fBip neighbor\fR.
++
+ .SH DESCRIPTION
+ .B Arp
+ manipulates the kernel's ARP cache in various ways.  The primary options
+@@ -51,6 +57,7 @@ are clearing an address mapping entry an
+ debugging purposes, the
+ .B arp
+ program also allows a complete dump of the ARP cache.
++
+ .SH OPTIONS
+ .TP
+ .B "\-v, \-\-verbose"
+@@ -107,6 +114,7 @@ table. For
+ entries the specified interface is the interface on which ARP requests will
+ be answered. 
+ .br
++
+ .B NOTE:
+ This has to be different from the interface to which the IP
+ datagrams will be routed.
+@@ -171,6 +179,7 @@ flag. Permanent entries are marked with
+ and published entries have the
+ .B P
+ flag.
++
+ .SH FILES
+ .I /proc/net/arp,
+ .br
+@@ -179,8 +188,10 @@ flag.
+ .I /etc/hosts
+ .br
+ .I /etc/ethers
++
+ .SH SEE ALSO
+-rarp(8), route(8), ifconfig(8), netstat(8)
++ip(8)
++
+ .SH AUTHORS
+ Fred N. van Kempen, <waltje@uwalt.nl.mugnet.org> with a lot of improvements
+ from net-tools Maintainer Bernd Eckenfels <net-tools@lina.inka.de>.
+diff -up net-tools-1.60/man/en_US/ethers.5.man-obsolete net-tools-1.60/man/en_US/ethers.5
+--- net-tools-1.60/man/en_US/ethers.5.man-obsolete	1999-01-09 16:55:31.000000000 +0100
++++ net-tools-1.60/man/en_US/ethers.5	2009-09-01 11:28:22.000000000 +0200
+@@ -1,7 +1,9 @@
+ .TH ETHERS 5 "April 26th, 1996" "" "File formats"
++
+ .SH NAME \"{{{roff}}}\"{{{
+ ethers \- Ethernet address to IP number database
+ .\"}}}
++
+ .SH DESCRIPTION \"{{{
+ \fB/etc/ethers\fP contains 48 bit Ethernet addresses and their corresponding
+ IP numbers, one line for each IP number:
+@@ -20,12 +22,11 @@ which represents one byte of the address
+ order (big-endian).  The \fIIP-number\fP may be a hostname which
+ can be resolved by DNS or a dot separated number.
+ .\"}}}
++
+ .SH EXAMPLES \"{{{
+ 08:00:20:00:61:CA  pal
+ .\"}}}
++
+ .SH FILES \"{{{
+ /etc/ethers
+ .\"}}}
+-.SH "SEE ALSO" \"{{{
+-rarp(8)
+-.\"}}}
+diff -up net-tools-1.60/man/en_US/ifconfig.8.man-obsolete net-tools-1.60/man/en_US/ifconfig.8
+--- net-tools-1.60/man/en_US/ifconfig.8.man-obsolete	2009-09-01 11:28:22.000000000 +0200
++++ net-tools-1.60/man/en_US/ifconfig.8	2009-09-01 11:28:22.000000000 +0200
+@@ -1,10 +1,19 @@
+ .TH IFCONFIG 8 "14 August 2000" "net-tools" "Linux Programmer's Manual"
++
+ .SH NAME
+ ifconfig \- configure a network interface
++
+ .SH SYNOPSIS
+ .B "ifconfig [interface]"
+ .br
+ .B "ifconfig interface [aftype] options | address ..."
++
++.SH NOTE
++.P 
++This program is obsolete!
++For replacement check \fBip addr\fR and \fBip link\fR.
++For statistics use \fBip -s link\fR.
++
+ .SH DESCRIPTION
+ .B Ifconfig
+ is used to configure the kernel-resident network interfaces.  It is
+@@ -44,6 +53,7 @@ octal, or hexadecimal, as specified in t
+ or 0X implies hexadecimal; otherwise, a leading '0' implies octal; otherwise,
+ the number is interpreted as decimal). Use of hexamedial and octal numbers
+ is not RFC-compliant and therefore its use is discouraged and may go away.
++
+ .SH OPTIONS
+ .TP
+ .B interface
+@@ -172,6 +182,7 @@ Set the length of the transmit queue of 
+ to small values for slower devices with a high latency (modem links, ISDN)
+ to prevent fast bulk transfers from disturbing interactive traffic like
+ telnet too much. 
++
+ .SH NOTES
+ Since kernel release 2.2 there are no explicit interface statistics for
+ alias interfaces anymore. The statistics printed for the original address
+@@ -184,17 +195,27 @@ command.
+ Interrupt problems with Ethernet device drivers fail with EAGAIN. See
+ .I http://www.scyld.com/expert/irq-conflict.html
+ for more information.
++
+ .SH FILES
+ .I /proc/net/socket 
+ .br
+ .I /proc/net/dev
+ .br
+ .I /proc/net/if_inet6
++
+ .SH BUGS
++Ifconfig uses obsolete kernel interface.
++It uses the ioctl access method to get the full address information,
++which limits hardware addresses to 8 bytes.
++Since an Infiniband address is 20 bytes,
++only the first 8 bytes of Infiniband address are displayed.
++.LP
+ While appletalk DDP and IPX addresses will be displayed they cannot be
+ altered by this command.
++
+ .SH SEE ALSO
+-route(8), netstat(8), arp(8), rarp(8), ipchains(8)
++ip(8)
++
+ .SH AUTHORS
+ Fred N. van Kempen, <waltje@uwalt.nl.mugnet.org>
+ .br
+diff -up net-tools-1.60/man/en_US/nameif.8.man-obsolete net-tools-1.60/man/en_US/nameif.8
+--- net-tools-1.60/man/en_US/nameif.8.man-obsolete	2000-10-18 19:26:29.000000000 +0200
++++ net-tools-1.60/man/en_US/nameif.8	2009-09-01 12:15:24.000000000 +0200
+@@ -1,10 +1,18 @@
+ .TH NAMEIF 8 "18 Oct 2000" "net-tools" "Linux's Administrator's Manual"
++
+ .SH NAME
+ nameif \- name network interfaces based on MAC addresses
++
+ .SH SYNOPSIS
+ .B "nameif [-c configfile] [-s]"
+ .br
+ .B "nameif [-c configfile] [-s] {interface macaddress}"
++
++.SH NOTE
++.P 
++This program is obsolete. For replacement check \fBip link\fR.
++This functionality is also much better provided by udev methods.
++
+ .SH DESCRIPTION
+ .B nameif 
+ renames network interfaces based on mac addresses. When no arguments are
+@@ -31,5 +39,9 @@ should be run before the interface is up
+ 
+ .SH FILES
+ /etc/mactab
++
++.SH SEE ALSO
++ip(8), udev(7)
++
+ .SH BUGS
+ Only works for Ethernet currently.
+diff -up net-tools-1.60/man/en_US/netstat.8.man-obsolete net-tools-1.60/man/en_US/netstat.8
+--- net-tools-1.60/man/en_US/netstat.8.man-obsolete	2009-09-01 11:28:22.000000000 +0200
++++ net-tools-1.60/man/en_US/netstat.8	2009-09-01 11:28:22.000000000 +0200
+@@ -92,6 +92,14 @@ netstat \- Print network connections, ro
+ .RB [ \-\-netrom ]
+ .RB [ \-\-ddp ]
+ 
++.SH NOTE
++.P 
++This program is obsolete.
++Replacement for \fBnetstat\fR is \fBss\fR.
++Replacement for \fBnetstat -r\fR is \fBip route\fR.
++Replacement for \fBnetstat -i\fR is \fBip -s link\fR.
++Replacement for \fBnetstat -g\fR is \fBip maddr\fR.
++
+ .SH DESCRIPTION
+ .B Netstat
+ prints information about the Linux networking subsystem.  The type of
+@@ -438,13 +446,11 @@ status information via the following fil
+ -- statistics
+ .fi
+ .P
++
+ .SH SEE ALSO
+-.BR route (8), 
+-.BR ifconfig (8), 
+-.BR ipchains (8),
+-.BR iptables (8),
+-.BR proc (5)
++.BR ss (8), ip(8)
+ .P
++
+ .SH BUGS
+ Occasionally strange information may appear if a socket changes
+ as it is viewed. This is unlikely to occur.
+diff -up net-tools-1.60/man/en_US/route.8.man-obsolete net-tools-1.60/man/en_US/route.8
+--- net-tools-1.60/man/en_US/route.8.man-obsolete	2000-05-21 20:59:03.000000000 +0200
++++ net-tools-1.60/man/en_US/route.8	2009-09-01 11:28:22.000000000 +0200
+@@ -1,6 +1,8 @@
+ .TH ROUTE 8 "2 January 2000" "net-tools" "Linux Programmer's Manual"
++
+ .SH NAME
+ route \- show / manipulate the IP routing table
++
+ .SH SYNOPSIS
+ .B route
+ .RB [ \-CFvnee ]
+@@ -52,6 +54,11 @@ If]
+ .RB [ \-\-version ]
+ .RB [ \-h ]
+ .RB [ \--help ]
++
++.SH NOTE
++.P 
++This program is obsolete. For replacement check \fBip route\fR.
++
+ .SH DESCRIPTION
+ .B Route
+ manipulates the kernel's IP routing tables.  Its primary use is to set
+@@ -306,6 +313,7 @@ address is not needed for the interface 
+ .B Arp (cached only)
+ Whether or not the hardware address for the cached route is up to date.
+ .LP
++
+ .SH FILES
+ .I /proc/net/ipv6_route
+ .br
+@@ -313,9 +321,11 @@ Whether or not the hardware address for 
+ .br
+ .I /proc/net/rt_cache
+ .LP
++
+ .SH SEE ALSO
+-.I ifconfig(8), netstat(8), arp(8), rarp(8)
++.I ip(8)
+ .LP
++
+ .SH HISTORY
+ .B Route
+ for Linux was originally written by Fred N.  van Kempen,

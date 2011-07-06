@@ -1,0 +1,11 @@
+--- net-tools-1.60/netstat.c.old	2007-02-22 14:39:39.000000000 +0100
++++ net-tools-1.60/netstat.c	2007-02-22 14:44:22.000000000 +0100
+@@ -2325,7 +2325,7 @@
+ 	usage();
+ 
+     if ((flag_inet || flag_inet6 || flag_sta) && !(flag_tcp || flag_udp || flag_sctp || flag_raw))
+-	flag_tcp = flag_udp = flag_sctp = flag_raw = 1;
++	flag_tcp = flag_udp = flag_raw = 1;
+ 
+     if ((flag_tcp || flag_udp || flag_sctp || flag_raw || flag_igmp) && !(flag_inet || flag_inet6))
+         flag_inet = flag_inet6 = 1;

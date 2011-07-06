@@ -1,0 +1,12 @@
+diff -up net-tools-1.60/lib/interface.c.large-indexes net-tools-1.60/lib/interface.c
+--- net-tools-1.60/lib/interface.c.large-indexes	2010-01-02 12:05:13.000000000 +0100
++++ net-tools-1.60/lib/interface.c	2010-01-02 12:34:24.000000000 +0100
+@@ -766,7 +766,7 @@ void ife_print_long(struct interface *pt
+     /* FIXME: should be integrated into interface.c.   */
+ 
+     if ((f = fopen(_PATH_PROCNET_IFINET6, "r")) != NULL) {
+-	while (fscanf(f, "%4s%4s%4s%4s%4s%4s%4s%4s %02x %02x %02x %02x %20s\n",
++	while (fscanf(f, "%4s%4s%4s%4s%4s%4s%4s%4s %08x %02x %02x %02x %20s\n",
+ 		      addr6p[0], addr6p[1], addr6p[2], addr6p[3],
+ 		      addr6p[4], addr6p[5], addr6p[6], addr6p[7],
+ 		  &if_idx, &plen, &scope, &dad_status, devname) != EOF) {
